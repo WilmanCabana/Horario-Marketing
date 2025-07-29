@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Horario Académico Elegante</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(255, 182, 193, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(221, 160, 221, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 218, 185, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #ffeef8, #f8e8ff, #fff0f5, #faf0e6);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="petals" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ff69b4" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23petals)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-flowers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 20px;
+            animation: floatFlower 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        .flower:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .flower:nth-child(2) { left: 25%; animation-delay: 3s; }
+        .flower:nth-child(3) { left: 40%; animation-delay: 6s; }
+        .flower:nth-child(4) { left: 55%; animation-delay: 9s; }
+        .flower:nth-child(5) { left: 70%; animation-delay: 12s; }
+        .flower:nth-child(6) { left: 85%; animation-delay: 15s; }
+
+        @keyframes floatFlower {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 3;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 50px 20px;
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 240, 245, 0.8)),
+                radial-gradient(circle at 30% 70%, rgba(255, 182, 193, 0.2), transparent);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 20px 40px rgba(255, 182, 193, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .header::before {
+            content: '🌸';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 2em;
+            animation: pulse 2s infinite;
+        }
+
+        .header::after {
+            content: '🌺';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2em;
+            animation: pulse 2s infinite 1s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #da70d6, #ba55d3, #9370db);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 4s ease-in-out infinite;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(255, 105, 180, 0.3);
+            letter-spacing: 3px;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #8b4789;
+            font-weight: 600;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+
+        .schedule-container {
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.9)),
+                radial-gradient(circle at 70% 30%, rgba(221, 160, 221, 0.1), transparent);
+            border-radius: 25px;
+            padding: 35px;
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 25px 50px rgba(255, 182, 193, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .schedule-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 182, 193, 0.02) 10px,
+                    rgba(255, 182, 193, 0.02) 20px
+                );
+            animation: shimmer 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 140px repeat(6, 1fr);
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .time-slot, .day-header, .class-cell {
+            border-radius: 18px;
+            padding: 18px 12px;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493, #da70d6);
+            color: white;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            box-shadow: 
+                0 8px 16px rgba(255, 105, 180, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .day-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: sparkle 4s infinite;
+        }
+
+        @keyframes sparkle {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .time-slot {
+            background: linear-gradient(135deg, #f8bbd9, #f48fb1);
+            color: #4a148c;
+            font-size: 1em;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(244, 143, 177, 0.2);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .class-cell {
+            min-height: 85px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .class-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            border-radius: inherit;
+            filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .class-cell:hover::before {
+            opacity: 0.6;
+        }
+
+        .class-cell:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .class-cell.marketing {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #fad0c4);
+            box-shadow: 0 8px 20px rgba(255, 154, 158, 0.3);
+            color: #4a148c;
+        }
+
+        .class-cell.gerencia {
+            background: linear-gradient(135deg, #a8edea, #fed6e3, #d299c2);
+            box-shadow: 0 8px 20px rgba(168, 237, 234, 0.3);
+            color: #1a237e;
+        }
+
+        .class-cell.etica {
+            background: linear-gradient(135deg, #ffd89b, #19547b, #667eea);
+            box-shadow: 0 8px 20px rgba(255, 216, 155, 0.3);
+            color: white;
+        }
+
+        .class-cell.inter-relations {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .class-cell.management {
+            background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+            color: #1a237e;
+        }
+
+        .class-cell.legislacion {
+            background: linear-gradient(135deg, #fa709a, #fee140, #ffd89b);
+            box-shadow: 0 8px 20px rgba(250, 112, 154, 0.3);
+            color: #4a148c;
+        }
+
+        .class-cell.digital {
+            background: linear-gradient(135deg, #f093fb, #f5576c, #4facfe);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
+            color: white;
+        }
+
+        .class-cell.electiva {
+            background: linear-gradient(135deg, #a8edea, #fed6e3, #667eea);
+            box-shadow: 0 8px 20px rgba(168, 237, 234, 0.3);
+            color: #4a148c;
+        }
+
+        .class-name {
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .class-details {
+            font-size: 0.85em;
+            opacity: 0.9;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        .classroom {
+            font-size: 0.8em;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .empty {
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px dashed rgba(255, 182, 193, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 35px;
+            background: 
+                linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 240, 245, 0.8));
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 182, 193, 0.15);
+        }
+
+        .footer-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #8b4789;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(221, 160, 221, 0.2));
+            padding: 20px 25px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            min-width: 120px;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #8b4789;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #8b4789;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-grid {
+                grid-template-columns: 120px repeat(6, 1fr);
+                gap: 6px;
+            }
+            
+            .time-slot, .day-header, .class-cell {
+                padding: 10px 6px;
+                font-size: 0.8em;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .class-name {
+                font-size: 0.85em;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-flowers">
+        <div class="flower">🌸</div>
+        <div class="flower">🌺</div>
+        <div class="flower">🌷</div>
+        <div class="flower">🌹</div>
+        <div class="flower">💐</div>
+        <div class="flower">🌻</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Mi Horario Académico</h1>
+            <div class="subtitle">Elegancia en cada clase ✨</div>
+        </div>
+        
+        <div class="schedule-container">
+            <div class="schedule-grid">
+                <!-- Header row -->
+                <div class="time-slot">HORA</div>
+                <div class="day-header">Lunes</div>
+                <div class="day-header">Martes</div>
+                <div class="day-header">Miércoles</div>
+                <div class="day-header">Jueves</div>
+                <div class="day-header">Viernes</div>
+                <div class="day-header">Sábado</div>
+                
+                <!-- 6:00-8:00 AM -->
+                <div class="time-slot">6-8 AM</div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell etica">
+                    <div class="class-name">💼 Ética Profesional</div>
+                    <div class="class-details">6:00 - 8:00 AM</div>
+                    <div class="classroom">📍 H101</div>
+                </div>
+                <div class="class-cell gerencia">
+                    <div class="class-name">🎯 Gerencia Comercial</div>
+                    <div class="class-details">6:00 - 8:00 AM</div>
+                    <div class="classroom">📍 S01</div>
+                </div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell electiva">
+                    <div class="class-name">🎓 Electiva Experiencia Académica</div>
+                    <div class="class-details">6:00 - 8:00 AM</div>
+                    <div class="classroom">📍 A202</div>
+                </div>
+                
+                <!-- 6:00-9:00 AM -->
+                <div class="time-slot">6-9 AM</div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell legislacion">
+                    <div class="class-name">⚖️ Legislación Internacional</div>
+                    <div class="class-details">6:00 - 9:00 AM</div>
+                    <div class="classroom">📍 C201</div>
+                </div>
+                <div class="class-cell empty"></div>
+                
+                <!-- 10:00-12:00 PM -->
+                <div class="time-slot">10-12 PM</div>
+                <div class="class-cell marketing">
+                    <div class="class-name">📊 Marketing Estratégico</div>
+                    <div class="class-details">10:00 - 12:00 PM</div>
+                    <div class="classroom">📍 A303</div>
+                </div>
+                <div class="class-cell marketing">
+                    <div class="class-name">📊 Marketing Estratégico</div>
+                    <div class="class-details">10:00 - 12:00 PM</div>
+                    <div class="classroom">📍 C101</div>
+                </div>
+                <div class="class-cell inter-relations">
+                    <div class="class-name">🌍 Inter Relations</div>
+                    <div class="class-details">10:00 - 12:00 PM</div>
+                    <div class="classroom">📍 C304</div>
+                </div>
+                <div class="class-cell inter-relations">
+                    <div class="class-name">🌍 Inter Relations</div>
+                    <div class="class-details">10:00 - 12:00 PM</div>
+                    <div class="classroom">📍 C304</div>
+                </div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                
+                <!-- 2:00-4:00 PM -->
+                <div class="time-slot">2-4 PM</div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell management">
+                    <div class="class-name">🌐 International Management Skills</div>
+                    <div class="class-details">2:00 - 4:00 PM</div>
+                    <div class="classroom">📍 D303</div>
+                </div>
+                <div class="class-cell digital">
+                    <div class="class-name">💻 Digital Marketing</div>
+                    <div class="class-details">2:00 - 4:00 PM</div>
+                    <div class="classroom">📍 H103</div>
+                </div>
+                <div class="class-cell empty"></div>
+                
+                <!-- 2:00-6:00 PM -->
+                <div class="time-slot">2-6 PM</div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell gerencia">
+                    <div class="class-name">🎯 Gerencia Comercial</div>
+                    <div class="class-details">2:00 - 6:00 PM</div>
+                    <div class="classroom">📍 S01</div>
+                </div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+                <div class="class-cell empty"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-title">Datos de mi semestre 💕</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Materias</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Salones diferentes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Días de clase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100</div>
+                    <div class="stat-label">% Elegante</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+                  </html>
